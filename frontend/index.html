@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কৃষি-AI: উদ্ভিদ রোগ নির্ণয়</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <div class="max-w-6xl mx-auto p-6">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-green-700 mb-2">🌱 পরিচর্যা </h1>
+            <p class="text-gray-600">আপনার শস্যের রোগ নির্ণয় করুন এআই প্রযুক্তির মাধ্যমে</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <!-- Left Column: Input Form -->
+            <div class="bg-white rounded-xl shadow-md p-6 h-fit">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">গাছের পাতার ছবি আপলোড করুন</label>
+                    <input type="file" id="imageInput" accept="image/*"
+                        class="w-full border border-gray-300 p-2 rounded-lg">
+                </div>
+
+                <div id="imagePreviewContainer" class="hidden mb-4 relative">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-gray-700 font-semibold">প্রিভিউ:</label>
+                        <button onclick="clearImage()"
+                            class="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            মুছে ফেলুন
+                        </button>
+                    </div>
+                    <div class="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                        <img id="imagePreview" src="" alt="Image Preview" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">লক্ষণগুলো বিস্তারিত লিখুন</label>
+                    <textarea id="symptomsInput" rows="3" placeholder="যেমন: পাতায় লালচে গোল দাগ দেখা যাচ্ছে..."
+                        class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                </div>
+
+                <button onclick="analyzePlant()" id="btnText"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-colors">
+                    রোগ নির্ণয় করুন
+                </button>
+            </div>
+
+            <!-- Right Column: Results & Loader -->
+            <div class="space-y-6">
+                <div id="resultContainer" class="hidden bg-white border-l-4 border-green-500 rounded-xl shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">📋 এআই (AI) এর পরামর্শ:</h2>
+                    <div id="diagnosisText" class="text-gray-700 leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+
+                <div id="loader" class="hidden text-center p-12 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700 mx-auto"></div>
+                    <p class="text-green-700 mt-4 font-medium">AI আপনার ছবিটি বিশ্লেষণ করছে...</p>
+                </div>
+
+                <!-- Placeholder when no result -->
+                <div id="placeholderResult"
+                    class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl p-12 text-center text-gray-500">
+                    <p>ফলাফল এখানে প্রদর্শিত হবে</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
