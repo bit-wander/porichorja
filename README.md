@@ -8,6 +8,12 @@ Porichorja is an AI-powered plant disease diagnosis tool. It allows users to upl
 - **Image Preview:** See a thumbnail of the uploaded image before analysis.
 - **Side-by-Side UI:** Modern layout for desktop with real-time feedback.
 
+### Desktop View
+![Desktop UI](docs/desktop_ui.png)
+
+### Mobile View
+![Mobile UI](docs/mobile_ui.png)
+
 ## 🛠 Project Structure
 ```text
 porichorja/
