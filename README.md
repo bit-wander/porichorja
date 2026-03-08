@@ -1,6 +1,6 @@
 # 🌱 Porichorja (পরিচর্যা)
 
-Porichorja is an AI-powered plant disease diagnosis tool. It allows users to upload images of their plants and describe symptoms in Bangla to get instant AI-driven advice.
+Porichorja is an AI-powered plant diagnosis tool. It allows users to upload images of their plants and describe symptoms in Bangla to get instant AI-driven advice.
 
 ## 🚀 Features
 - **Expert Query System:** Discuss agricultural queries and get expert advice.
