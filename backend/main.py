@@ -37,7 +37,7 @@ async def diagnose_plant(
             # Save image temporarily
             image_path = "temp_image.jpg"
             img.convert("RGB").save(image_path, "JPEG")
-        
+    
         # Get diagnosis from AI engine
         diagnosis = get_diagnosis(image_path, symptoms)
         

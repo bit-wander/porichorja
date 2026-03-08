@@ -1,91 +1,90 @@
-import base64 
+import base64
 import os
+import pandas as pd
+import numpy as np
+import faiss
 from dotenv import load_dotenv
-from huggingface_hub import InferenceClient
+from ollama import Client
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
-token = os.getenv("HF_TOKEN")
-client = InferenceClient(token=token)
 
-def traslate_diagnosis(diagnosis):
-    model = "Qwen/Qwen3-235B-A22B"
-    messages = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "Translate the following text to Bangla: " + diagnosis},
-            ],
-        }
-    ]
-    response = client.chat_completion(
-        messages=messages,
-        max_tokens=500,
-        model=model
+# Data paths
+DATA_DIR = 'backend/data/'
+df = pd.read_csv(os.path.join(DATA_DIR, 'clean_agriculture_qa.csv'))
+index = faiss.read_index(os.path.join(DATA_DIR, 'agri_index.faiss'))
+embeddings = np.load(os.path.join(DATA_DIR, 'agri_embeddings.npy'))
+
+# Models
+embedding_model = SentenceTransformer("intfloat/multilingual-e5-small")
+
+# Ollama Client
+ollama_client = Client(
+    host="https://ollama.com",
+    headers={'Authorization': 'Bearer ' + os.getenv('OLLAMA_API_KEY')}
+)
+
+def retrieve_context(query, k=3):
+    query_embedding = embedding_model.encode(
+        ["query: " + query],
+        convert_to_numpy=True
     )
-    print(response.choices[0].message.content)
-    return response.choices[0].message.content
+    distance, indices = index.search(query_embedding, k)
+    results = df.iloc[indices[0]]
+    return results
 
+def build_prompt(query, retrieved_docs):
+    context = ""
+    for i, row in retrieved_docs.iterrows():
+        context += f"\nপ্রশ্ন: {row['question']}\nউত্তর: {row['answer']}\n"
 
+    prompt = f"""
+আপনি একজন কৃষি বিশেষজ্ঞ।
+
+নিচের তথ্য ব্যবহার করে প্রশ্নের উত্তর দিন।
+
+তথ্য:
+{context}
+
+ব্যবহারকারীর প্রশ্ন:
+{query}
+
+বাংলায় সংক্ষিপ্ত ও পরিষ্কার উত্তর দিন।
+"""
+    return prompt
+
+def generator(prompt, image_url=None):
+    messages = [{"role": "user", "content": prompt}]
+
+    # images = []
+    # if image_url:
+    #     # Extract base64 part if it's a data URL
+    #     if image_url.startswith("data:"):
+    #         base64_data = image_url.split(",")[1]
+    #         images.append(base64_data)
+    #     else:
+    #         images.append(image_url)
+
+    response = ollama_client.chat(
+        model='gemma3:4b',
+        messages=messages,
+        # images=images if images else None,
+        stream=False
+    )
+    return response.message.content
+
+def rag_answer(query, image_url=None):
+    docs = retrieve_context(query)
+    prompt = build_prompt(query, docs)
+    response = generator(prompt, image_url=image_url)
+    return response
 
 def get_diagnosis(image_path, user_text_bangla):
-
     image_url = None
     if image_path:
-        # Convert image to base64 for image transmission
         with open(image_path, "rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
         image_url = f"data:image/jpeg;base64,{encoded_image}"
 
-    # Construct the prompt for the model
-    if image_path and user_text_bangla:
-        prompt = f"""
-        You are a helpful assistant that can diagnose plant diseases based on images and user descriptions.
-        The user has provided an image of a plant and a description in Bangla.
-        Please analyze the image identify the plant and based on the description provide a diagnosis.
-        
-        User Description: {user_text_bangla}
-        """
-    elif image_path:
-        prompt = """
-        You are a helpful assistant that can diagnose plant diseases based on images.
-        The user has provided an image of a plant.
-        Please analyze the image identify the plant and provide a diagnosis.
-        """
-    else:
-        prompt = f"""
-        You are a helpful assistant that can diagnose plant diseases based on user descriptions.
-        The user has provided a description in Bangla.
-        Please provide a diagnosis based on this description.
-        
-        User Description: {user_text_bangla}
-        """
-    
-    prompt += """
-    Please provide the diagnosis in the following format:
-    
-    Disease: [Name of the disease]
-    Symptoms: [Description of the symptoms]
-    Treatment: [Recommended treatment]
-    """
-
-    content = [{"type": "text", "text": prompt}]
-    if image_url:
-        content.append({"type": "image_url", "image_url": {"url": image_url}})
-
-    messages = [
-        {
-            "role": "user",
-            "content": content,
-        }
-    ]
-
-    response = client.chat_completion(
-        messages=messages,
-        max_tokens=500,
-        model="Qwen/Qwen2.5-VL-7B-Instruct"
-    )
-
-    print(response.choices[0].message.content)
-
-    return response.choices[0].message.content
-
+    response = rag_answer(user_text_bangla, image_url=image_url)
+    return response

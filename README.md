@@ -3,10 +3,13 @@
 Porichorja is an AI-powered plant disease diagnosis tool. It allows users to upload images of their plants and describe symptoms in Bangla to get instant AI-driven advice.
 
 ## 🚀 Features
-- **AI-Powered Diagnosis:** Uses advanced vision models to identify plant diseases.
-- **Flexible Input:** Works with an image, a text description, or both.
-- **Image Preview:** See a thumbnail of the uploaded image before analysis.
-- **Side-by-Side UI:** Modern layout for desktop with real-time feedback.
+- **Expert Query System:** Discuss agricultural queries and get expert advice.
+- **RAG Powered:** Uses reliable agricultural data for accurate responses.
+- **Flexible Input:** Currently supports text-based queries in Bangla.
+- **Side-by-Side UI:** Modern layout for seamless interaction.
+
+### Demonstration
+![Demonstration](assets/demonstration.gif)
 
 ### Desktop View
 ![Desktop UI](docs/desktop_ui.png)
@@ -17,14 +20,17 @@ Porichorja is an AI-powered plant disease diagnosis tool. It allows users to upl
 ## 🛠 Project Structure
 ```text
 porichorja/
+├── assets/           # Project assets (images, gifs)
 ├── backend/
-│   ├── ai_engine.py  # Inference logic with Hugging Face Hub
+│   ├── data/         # RAG data files (embeddings, index, CSV)
+│   ├── ai_engine.py  # Inference logic with Ollama
 │   └── main.py       # FastAPI server
 ├── frontend/
 │   ├── index.html    # Web UI (Tailwind CSS)
 │   └── script.js     # Frontend logic
 ├── .env              # Environment variables (API Keys)
 ├── .gitignore        # Ignored files
+├── requirements.txt  # Python dependencies
 └── README.md         # Project documentation
 ```
 
@@ -32,21 +38,19 @@ porichorja/
 
 ### Backend
 1. Create a `.env` file in the root directory.
-2. Add your Hugging Face API token: `HF_TOKEN=your_token_here`.
-3. Install dependencies:
+2. Add your Ollama API key: `OLLAMA_API_KEY=your_key_here`.
+3. (Optional) Add your Hugging Face token if using HF models: `HF_TOKEN=your_token_here`.
+4. Install dependencies:
    ```bash
-   pip install fastapi uvicorn huggingface_hub python-dotenv pillow
+   pip install -r requirements.txt
    ```
-4. Run the backend:
+5. Run the backend:
    ```bash
    fastapi dev backend/main.py
    ```
 
 ### Frontend
 - Open `frontend/index.html` in any modern web browser.
-
-## 📝 Note on Language
-Currently, the AI analysis response might be in English due to limited data availability for detailed Bangla botanical terms. Providing responses fully in Bangla is planned for the future.
 
 ---
 *Developed with 🌱 and AI.*
