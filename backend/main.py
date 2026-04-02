@@ -1,11 +1,21 @@
 import io 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form 
+from fastapi.staticfiles import StaticFiles
 import base64 
 from PIL import Image 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from ai_engine import get_diagnosis
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title='Porichorja API', description='Plant Disease Detection API')
+app = FastAPI(
+    title='Porichorja API', 
+    description='Plant Disease Detection API',
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/diagnose")
+@app.post("/api/diagnose")
 async def diagnose_plant(
     image: UploadFile = File(None),
     symptoms: str = Form("")
@@ -54,4 +64,9 @@ async def diagnose_plant(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Mount the static frontend directory.
+# This should be mapped after all the API routes so it acts as a catch-all.
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.isdir(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
 
