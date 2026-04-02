@@ -62,11 +62,14 @@ async def diagnose_plant(
             }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        error_trace = traceback.format_exc()
+        print(error_trace)  # Also print to container logs
+        # Return as JSON so the frontend receives it directly in 'data.message'
+        return {"status": "error", "message": error_trace}
 
 # Mount the static frontend directory.
 # This should be mapped after all the API routes so it acts as a catch-all.
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
 if os.path.isdir(frontend_path):
     app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
-
