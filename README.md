@@ -1,3 +1,12 @@
+---
+title: Porichorja
+emoji: 🌱
+colorFrom: green
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # 🌱 Porichorja (পরিচর্যা)
 
 Porichorja is an AI-powered plant diagnosis tool. It allows users to upload images of their plants and describe symptoms in Bangla to get instant AI-driven advice.
