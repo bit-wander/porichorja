@@ -12,8 +12,21 @@ load_dotenv()
 # Data paths
 DATA_DIR = 'backend/data/'
 df = pd.read_csv(os.path.join(DATA_DIR, 'clean_agriculture_qa.csv'))
-index = faiss.read_index(os.path.join(DATA_DIR, 'agri_index.faiss'))
-embeddings = np.load(os.path.join(DATA_DIR, 'agri_embeddings.npy'))
+
+_index = None
+_embeddings = None
+
+def get_faiss_index():
+    global _index
+    if _index is None:
+        _index = faiss.read_index(os.path.join(DATA_DIR, 'agri_index.faiss'))
+    return _index
+
+def get_embeddings():
+    global _embeddings
+    if _embeddings is None:
+        _embeddings = np.load(os.path.join(DATA_DIR, 'agri_embeddings.npy'))
+    return _embeddings
 
 # Models
 embedding_model = SentenceTransformer("intfloat/multilingual-e5-small")
@@ -29,7 +42,8 @@ def retrieve_context(query, k=3):
         ["query: " + query],
         convert_to_numpy=True
     )
-    distance, indices = index.search(query_embedding, k)
+    idx = get_faiss_index()
+    distance, indices = idx.search(query_embedding, k)
     results = df.iloc[indices[0]]
     return results
 
