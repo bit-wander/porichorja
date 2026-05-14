@@ -1,12 +1,3 @@
----
-title: Porichorja
-emoji: 🌱
-colorFrom: green
-colorTo: blue
-sdk: docker
-pinned: false
----
-
 # 🌱 Porichorja (পরিচর্যা)
 
 Porichorja is an agriculture and livestock related QnA system focused on Bangladesh. It uses RAG to provide reliable and context-aware responses.
