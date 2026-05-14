@@ -9,22 +9,11 @@ pinned: false
 
 # 🌱 Porichorja (পরিচর্যা)
 
-Porichorja is an AI-powered plant diagnosis tool. It allows users to upload images of their plants and describe symptoms in Bangla to get instant AI-driven advice.
-
-## 🚀 Features
-- **Expert Query System:** Discuss agricultural queries and get expert advice.
-- **RAG Powered:** Uses reliable agricultural data for accurate responses.
-- **Flexible Input:** Currently supports text-based queries in Bangla.
-- **Side-by-Side UI:** Modern layout for seamless interaction.
+Porichorja is an agriculture and livestock related QnA system focused on Bangladesh. It uses RAG to provide reliable and context-aware responses.
 
 ### Demonstration
 ![Demonstration](assets/demonstration.gif)
 
-### Desktop View
-![Desktop UI](docs/desktop_ui.png)
-
-### Mobile View
-![Mobile UI](docs/mobile_ui.png)
 
 ## 🛠 Project Structure
 ```text
@@ -61,5 +50,3 @@ porichorja/
 ### Frontend
 - Open `frontend/index.html` in any modern web browser.
 
----
-*Developed with 🌱 and AI.*
